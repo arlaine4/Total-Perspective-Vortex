@@ -1,11 +1,15 @@
 import mne
 import matplotlib.pyplot as plt
+import os
+import warnings
 
 from mne import pick_types, events_from_annotations, annotations_from_events
 from mne.io import concatenate_raws
 from mne.datasets import eegbci
 from mne.io.edf import read_raw_edf
 from mne.channels import make_standard_montage
+
+warnings.filterwarnings("ignore")
 
 
 # EVENTS = 1: rest, 2: do-feet, 3: do-hands, 4: imagine-feet, 5: imagine-hands
@@ -24,7 +28,15 @@ def	main_analyze(subjects, runs, visu):
 		plot_data(data, f_data)
 		channels_frequency_plot(data, f_data)
 	train_data, labels = get_events(f_data)
-	return data, f_data, train_data, labels
+	if not os.path.isdir('dumps'):
+		os.makedirs('dumps')
+	#data.save('dumps/data.fif', overwrite=True)
+	#f_data.save('dumps/filtered_data.fif', overwrite=True)
+	mne.export.export_raw('dumps/data.edf', data, overwrite=True)
+	mne.export.export_raw('dumps/filtered_data.edf', f_data, overwrite=True)
+	train_data.dump('dumps/train_data.pkl')
+	labels.dump('dumps/labels.pkl')
+
 
 def	get_events(f_data):
 	"""
