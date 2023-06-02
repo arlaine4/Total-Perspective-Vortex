@@ -59,9 +59,16 @@ class CSP:
 		---> CSP enables effective discrimination of different brain states or
 			 conditions from EEG data.
 		"""
+		n_trials, n_channels, n_samples = X.shape
+		transformed_data = np.zeros((n_trials, self.n_components, n_samples))
+		for i in range(n_trials):
+			trial_data = X[i]
+			transformed_data[i] = np.dot(self.filters.T, trial_data)
+		return transformed_data.reshape(n_trials, -1)
 		# Apply CSP filters to input data
-		transformed_data = np.dot(X, self.filters)
-		return transformed_data
+		#transformed_data = np.dot(X, self.filters[:self.n_components])
+		#print('done transforming')
+		#return transformed_data
 	
 	def	fit_transform(self, X, y):
 		self.fit(X, y)

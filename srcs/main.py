@@ -11,13 +11,12 @@ runs = {'do': [5, 9, 13],
 def	run_calls(options):
 	if options.analyze:
 		main_analyze(subjects, runs, options.visu)
-	else:
-		if not check_dumped_files_exists():
-			raise Exception("You need to run the program with -a first in"\
-								" order to dump the files needed for training"\
-								" , prediction or pipeline creation.")
-		if options.pipeline:
-			create_pipeline(subjects, runs)
+	if not check_dumped_files_exists():
+		raise Exception("You need to run the program with -a first in"\
+							" order to dump the files needed for training"\
+							" , prediction or pipeline creation.")
+	if options.pipeline:
+		create_pipeline(subjects, runs)
 							
 
 if __name__ == "__main__":

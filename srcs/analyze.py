@@ -36,6 +36,7 @@ def	main_analyze(subjects, runs, visu):
 	mne.export.export_raw('dumps/filtered_data.edf', f_data, overwrite=True)
 	train_data.dump('dumps/train_data.pkl')
 	labels.dump('dumps/labels.pkl')
+	return data, f_data, train_data, labels
 
 
 def	get_events(f_data):
@@ -79,6 +80,7 @@ def	raw_files_info(files):
 def	load_data(subjects, runs):
 	files = []
 	for subject in subjects:
+		print(f'\033[33mloading subject {subject}\033[0m')
 		for i, j in zip(runs['do'], runs['imagine']):
 			# Loading do and imagine runs for each subject
 			files_d = [read_raw_edf(f, preload=True, stim_channel='auto') for f \
@@ -108,10 +110,9 @@ def	load_data(subjects, runs):
 			raw_i.rename_channels(lambda x: x.strip('.'))
 			files.append(raw_d)
 			files.append(raw_i)
-			files = concatenate_raws(files)
-			files.rename_channels(lambda x: x.strip('.'))
-
-			return files
+	files = concatenate_raws(files)
+	files.rename_channels(lambda x: x.strip('.'))
+	return files
 
 
 def	set_montage(files, plot=False):
